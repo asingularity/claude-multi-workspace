@@ -61,7 +61,7 @@ COPY code-server-config.yaml /root/.config/code-server/config.yaml
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-WORKDIR /workspace
+WORKDIR /home/csaba/projects
 
 EXPOSE 8080
 

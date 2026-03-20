@@ -6,12 +6,15 @@ if [ -n "$ANTHROPIC_API_KEY" ]; then
     export ANTHROPIC_API_KEY
 fi
 
+# Symlink so `cd /workspace` still works as a convenience alias
+ln -sfn /home/csaba/projects /workspace 2>/dev/null || true
+
 # Start code-server in the background
 echo "Starting code-server on :8080 ..."
-code-server /workspace &
+code-server /home/csaba/projects &
 
 # Start a tmux session as fallback (for SSH access if you ever need it)
-tmux new-session -d -s main -c /workspace 2>/dev/null || true
+tmux new-session -d -s main -c /home/csaba/projects 2>/dev/null || true
 
 echo "========================================"
 echo "  code-server running on port 8080"

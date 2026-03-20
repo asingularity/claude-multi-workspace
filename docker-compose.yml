@@ -11,20 +11,20 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
-      # Mount your project(s) - adjust path as needed
-      - ~/projects:/workspace
+      # Mount projects at the SAME absolute path as on host so Claude Code
+      # can find existing chat history (it indexes by absolute project path)
+      - ~/projects:/home/csaba/projects
       # Persist VS Code extensions and settings across rebuilds
       - code-server-data:/root/.local/share/code-server
-      # Persist Claude Code config / auth
-      - claude-config:/root/.claude
+      # Bind-mount host ~/.claude so existing chats, auth, and config are shared
+      - ~/.claude:/root/.claude
     environment:
       # Set your password here (or use a .env file)
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-    ports:
-      # Access code-server at http://localhost:8080
-      # If using Tailscale, you can remove this and access via Tailscale IP instead
-      - "8080:8080"
+    # Host networking lets `claude login` OAuth callback reach the container
+    # (code-server will be at http://localhost:8080 directly)
+    network_mode: host
     restart: unless-stopped
     # Give Claude Code full permissions - no stuck prompts
     privileged: false
@@ -61,5 +61,4 @@ services:
 
 volumes:
   code-server-data:
-  claude-config:
   # tailscale-state:
