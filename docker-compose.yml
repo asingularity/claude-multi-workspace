@@ -21,6 +21,8 @@ services:
       # Git config and SSH keys from host
       - ~/.gitconfig:/root/.gitconfig:ro
       - ~/.ssh:/root/.ssh:ro
+      # Tailscale TLS certs for HTTPS (generated on host with `tailscale cert`)
+      - /etc/tailscale/certs:/etc/tailscale/certs:ro
     environment:
       # Set your password here (or use a .env file)
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}

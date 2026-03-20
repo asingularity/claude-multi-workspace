@@ -2,4 +2,7 @@ bind-addr: 0.0.0.0:8080
 auth: password
 # Change this! Or set PASSWORD env var in docker-compose.yml
 password: changeme
+# TLS certs are auto-detected from /etc/tailscale/certs/ at startup
+# (see entrypoint.sh). Falls back to HTTP if no certs found.
 cert: false
+cert-key: false

@@ -3,9 +3,9 @@
 ## What this gives you
 
 - **VS Code in your phone's browser** via code-server (with autocorrect, spell check, image preview)
-- **Claude Code** in the integrated terminal with full permissions
-- **GPU access** for your Blue Gamma / PyTorch work
-- **Tailscale** (optional) so you can reach it from anywhere without port forwarding
+- **Claude Code** in the integrated terminal, containerized with full permissions
+- **GPU access** for your GPU work
+- **Tailscale** so you can reach it from anywhere without port forwarding
 
 ## Quick start
 
