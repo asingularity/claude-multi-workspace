@@ -1,115 +1,105 @@
-# Remote Dev Container — Claude Code Workspace
+# EEVIAC — Remote Dev Container for Claude Code
 
 ## What this gives you
 
-- **VS Code in your laptop/phone's browser** via code-server; persistence server-side
-- **Claude Code** in the integrated terminal, containerized, with full permissions if desired
-- **GPU access** for your GPU work
-- **Tailscale** so you can reach it from anywhere without port forwarding
+- **VS Code in your phone/laptop browser** via code-server, with server-side persistence
+- **Claude Code** in the integrated terminal, containerized with full permissions
+- **GPU access** for PyTorch / CUDA work
+- **HTTPS via Tailscale** so you can access it securely from anywhere
 
-## Quick start
+## Prerequisites
+
+- Docker with Compose
+- NVIDIA GPU + drivers (for GPU access)
+- Tailscale account
+
+## Setup
+
+### 1. Projects folder
+
+By default, `~/projects` is mounted into the container. To use a different folder:
 
 ```bash
-# 1. Clone / copy this folder to your workstation
+export PROJECTS_DIR=/path/to/your/projects
+```
 
-# 2. Set your secrets
+The folder is mounted at the same absolute path inside the container so that Claude Code's chat history (which is indexed by project path) stays linked correctly.
+
+### 2. Install Tailscale and generate HTTPS certs
+
+```bash
+./install_tailscale.sh
+```
+
+This installs Tailscale (if not already installed) and generates TLS certificates in `/etc/tailscale/certs/`. These are auto-detected by the container at startup.
+
+### 3. Set your password
+
+```bash
 export CODE_SERVER_PASSWORD="something-secure"
-
-# 3. Build and run; or just run
-docker compose up -d --build
-docker compose up -d 
-
-# 4. Open in browser (local network)
-#    http://your-workstation-ip:8080
-
-# 5. Logs if needed on server
-docker compose logs -f
-
-# 6. shut down docker if needed
-docker compose down
 ```
 
-## Phone access with Tailscale
+### 4. Start the container
 
-If you only access from your local network, the above is sufficient. For access from
-anywhere (coffee shop, on the go):
-
-1. Install Tailscale on your workstation and phone
-2. **Option A — Host-level Tailscale (simpler):**
-   Just install Tailscale on the workstation directly. The container's port 8080 is
-   already forwarded to the host, so `http://workstation-tailscale-ip:8080` works.
-
-3. **Option B — Sidecar container (no host install needed):**
-   Uncomment the `tailscale` service in `docker-compose.yml`, set `TS_AUTHKEY`,
-   and `docker compose up -d`. Access at `http://claude-workspace:8080`.
-
-## Remote access from a laptop
-
-For accessing from a different machine on your network or over the internet:
-
-**Local network:**
-Open `http://<workstation-ip>:8080` in any browser. Find your workstation's IP with `hostname -I` or `ip addr`.
-
-**Over the internet (via Tailscale):**
-1. Install Tailscale on both your workstation and laptop
-2. On the workstation, run `tailscale ip` to get its Tailscale IP (e.g. `100.x.y.z`)
-3. From your laptop, open `http://100.x.y.z:8080`
-
-**SSH tunnel (no Tailscale needed):**
-If you have SSH access to the workstation, forward the port:
 ```bash
-ssh -L 8080:localhost:8080 user@workstation-ip
+./start_docker.sh
 ```
-Then open `http://localhost:8080` on your laptop. This also works through firewalls since it only needs outbound SSH.
 
-**Claude Code login from inside the container:**
+This builds the image (if needed) and starts the container. Subsequent runs reuse cached layers.
+
+### 5. Access from any device
+
+Open `https://<your-tailscale-hostname>:8080` in your phone or laptop browser.
+
+Find your hostname with `tailscale status` — it will be something like `myhost.tail1234.ts.net`.
+
+### 6. Stop
+
 ```bash
-docker exec -it claude-workspace bash
+./stop_docker.sh
+```
+
+## Claude Code login
+
+From inside a code-server terminal (or via `docker exec`):
+
+```bash
 claude login
 ```
-It will print an OAuth URL — open it in your laptop/phone browser. Because the container uses host networking, the callback reaches it directly. The credential persists in your host's `~/.claude/`.
 
-## Usage from your phone
-
-1. Open your phone browser → go to the code-server URL
-2. Enter your password
-3. You get full VS Code: file explorer, terminal, image viewer
-4. Open a terminal (hamburger menu → Terminal → New Terminal)
-5. Run `claude` to start Claude Code
-6. View plots: click any `.png`/`.svg` in the file explorer sidebar — it opens in a tab
+It will print an OAuth URL — open it in any browser. Because the container uses host networking, the callback reaches it directly. The credential persists in your host's `~/.claude/`.
 
 ## Session persistence
 
-code-server runs server-side, so **closing your browser doesn't stop running processes**.
-When you reconnect, your terminals and any running Claude Code session are still there.
+code-server runs server-side, so **closing your browser doesn't stop running processes**. When you reconnect, your terminals and any running Claude Code session are still there.
 
-For extra resilience on very long-running tasks, run Claude inside tmux within a
-code-server terminal:
+For extra resilience on very long-running tasks, run Claude inside tmux:
+
 ```bash
 tmux new -s claude
 claude
 # detach: Ctrl+B, D
 # reattach: tmux attach -t claude
 ```
-This way the process survives even if code-server itself restarts — as long as the
-container stays up.
 
-## Tips
+The process survives even if code-server restarts — as long as the container stays up.
 
-- **Viewing plots**: Matplotlib's `plt.savefig('plot.png')` → click it in the sidebar.
-  Or use the Jupyter extension for inline plots.
-- **Multiple terminals**: code-server supports split terminals, so you can have
-  Claude Code in one and a regular shell in another.
-- **Persist across rebuilds**: VS Code settings and Claude auth are stored in Docker
-  volumes, so `docker compose down && docker compose up` won't lose your config.
-- **Mobile keyboard**: code-server respects your phone's keyboard autocorrect.
-  For even better mobile typing, try the "Hacker Keyboard" app (Android) or just
-  rely on iOS/Android native keyboard.
+## Git
 
-## Updating
+Git config and SSH keys are mounted read-only from the host. Push, pull, and clone work out of the box — no additional setup needed inside the container.
+
+## Rebuilding
 
 ```bash
-docker compose down
+./stop_docker.sh
 docker compose build --no-cache
-docker compose up -d
+./start_docker.sh
+```
+
+VS Code settings and Claude auth persist across rebuilds (stored in Docker volumes and host bind-mounts).
+
+## Logs
+
+```bash
+docker compose logs -f
 ```

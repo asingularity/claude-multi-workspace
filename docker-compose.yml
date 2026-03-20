@@ -11,9 +11,9 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
-      # Mount projects at the SAME absolute path as on host so Claude Code
-      # can find existing chat history (it indexes by absolute project path)
-      - ~/projects:/home/csaba/projects
+      # Mount projects at the SAME absolute path inside container as on host
+      # so Claude Code can find existing chat history (it indexes by absolute path)
+      - ${PROJECTS_DIR}:${PROJECTS_DIR}
       # Persist VS Code extensions and settings across rebuilds
       - code-server-data:/root/.local/share/code-server
       # Bind-mount host ~/.claude so existing chats, auth, and config are shared
@@ -26,6 +26,7 @@ services:
     environment:
       # Set your password here (or use a .env file)
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}
+      - PROJECTS_DIR=${PROJECTS_DIR}
     # Host networking lets `claude login` OAuth callback reach the container
     # (code-server will be at http://localhost:8080 directly)
     network_mode: host

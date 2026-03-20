@@ -7,7 +7,7 @@ if [ -n "$ANTHROPIC_API_KEY" ]; then
 fi
 
 # Symlink so `cd /workspace` still works as a convenience alias
-ln -sfn /home/csaba/projects /workspace 2>/dev/null || true
+ln -sfn "${PROJECTS_DIR}" /workspace 2>/dev/null || true
 
 # Auto-detect Tailscale TLS certs if mounted
 CERT_DIR="/etc/tailscale/certs"
@@ -26,10 +26,10 @@ fi
 
 # Start code-server in the background
 echo "Starting code-server on :8080 ..."
-code-server /home/csaba/projects &
+code-server ${PROJECTS_DIR} &
 
 # Start a tmux session as fallback (for SSH access if you ever need it)
-tmux new-session -d -s main -c /home/csaba/projects 2>/dev/null || true
+tmux new-session -d -s main -c ${PROJECTS_DIR} 2>/dev/null || true
 
 echo "========================================"
 echo "  code-server running on port 8080"
