@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+# Pass through ANTHROPIC_API_KEY if set
+if [ -n "$ANTHROPIC_API_KEY" ]; then
+    export ANTHROPIC_API_KEY
+fi
+
+# Start code-server in the background
+echo "Starting code-server on :8080 ..."
+code-server /workspace &
+
+# Start a tmux session as fallback (for SSH access if you ever need it)
+tmux new-session -d -s main -c /workspace 2>/dev/null || true
+
+echo "========================================"
+echo "  code-server running on port 8080"
+echo "  Open in browser to use VS Code"
+echo "  Claude Code available in the terminal"
+echo "========================================"
+
+# Keep container alive
+wait
