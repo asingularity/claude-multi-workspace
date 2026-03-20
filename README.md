@@ -1,9 +1,9 @@
-# Remote Dev Container — Phone-Friendly Claude Code Workspace
+# Remote Dev Container — Claude Code Workspace
 
 ## What this gives you
 
-- **VS Code in your phone's browser** via code-server (with autocorrect, spell check, image preview)
-- **Claude Code** in the integrated terminal, containerized with full permissions
+- **VS Code in your laptop/phone's browser** via code-server; persistence server-side
+- **Claude Code** in the integrated terminal, containerized, with full permissions if desired
 - **GPU access** for your GPU work
 - **Tailscale** so you can reach it from anywhere without port forwarding
 
