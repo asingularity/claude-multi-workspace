@@ -14,13 +14,15 @@
 
 # 2. Set your secrets
 export CODE_SERVER_PASSWORD="something-secure"
-export ANTHROPIC_API_KEY="sk-ant-..."   # if using API key auth for Claude Code
 
 # 3. Build and run
 docker compose up -d --build
 
 # 4. Open in browser (local network)
 #    http://your-workstation-ip:8080
+
+# 5. Logs if needed on server
+docker compose logs -f
 ```
 
 ## Phone access with Tailscale

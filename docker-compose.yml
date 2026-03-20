@@ -21,7 +21,6 @@ services:
     environment:
       # Set your password here (or use a .env file)
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     # Host networking lets `claude login` OAuth callback reach the container
     # (code-server will be at http://localhost:8080 directly)
     network_mode: host
