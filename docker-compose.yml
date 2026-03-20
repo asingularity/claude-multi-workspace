@@ -18,6 +18,9 @@ services:
       - code-server-data:/root/.local/share/code-server
       # Bind-mount host ~/.claude so existing chats, auth, and config are shared
       - ~/.claude:/root/.claude
+      # Git config and SSH keys from host
+      - ~/.gitconfig:/root/.gitconfig:ro
+      - ~/.ssh:/root/.ssh:ro
     environment:
       # Set your password here (or use a .env file)
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}

@@ -15,14 +15,18 @@
 # 2. Set your secrets
 export CODE_SERVER_PASSWORD="something-secure"
 
-# 3. Build and run
+# 3. Build and run; or just run
 docker compose up -d --build
+docker compose up -d 
 
 # 4. Open in browser (local network)
 #    http://your-workstation-ip:8080
 
 # 5. Logs if needed on server
 docker compose logs -f
+
+# 6. shut down docker if needed
+docker compose down
 ```
 
 ## Phone access with Tailscale
