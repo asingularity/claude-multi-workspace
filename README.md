@@ -1,4 +1,4 @@
-# Remote Dev Container — Phone-Friendly Claude Code Workspace
+# Remote Dev Container — Claude Code Workspace
 
 ## What this gives you
 
