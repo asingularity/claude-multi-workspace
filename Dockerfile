@@ -56,6 +56,10 @@ RUN code-server --install-extension ms-python.python && \
 # code-server config template (entrypoint copies to config dir on first run)
 COPY code-server-config.yaml /etc/code-server-config.yaml
 
+# tmux shell wrapper — auto-attaches terminals to project-named sessions
+COPY tmux-shell.sh /usr/local/bin/tmux-shell
+RUN chmod +x /usr/local/bin/tmux-shell
+
 # Entrypoint that starts code-server and keeps a bash session available
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

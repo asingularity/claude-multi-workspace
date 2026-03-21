@@ -21,6 +21,23 @@ fi
 # Symlink so `cd /workspace` still works as a convenience alias
 ln -sfn "${PROJECTS_DIR}" /workspace 2>/dev/null || true
 
+# Set code-server default terminal to tmux-shell (auto-attaches to project sessions)
+SETTINGS_DIR="/root/.local/share/code-server/User"
+SETTINGS_FILE="$SETTINGS_DIR/settings.json"
+mkdir -p "$SETTINGS_DIR"
+if [ ! -f "$SETTINGS_FILE" ]; then
+    echo '{}' > "$SETTINGS_FILE"
+fi
+# Merge tmux-shell as default terminal profile (preserves existing settings)
+python3 -c "
+import json, sys
+f = '$SETTINGS_FILE'
+with open(f) as fh: s = json.load(fh)
+s['terminal.integrated.defaultProfile.linux'] = 'tmux'
+s.setdefault('terminal.integrated.profiles.linux', {})['tmux'] = {'path': '/usr/local/bin/tmux-shell'}
+with open(f, 'w') as fh: json.dump(s, fh, indent=2)
+"
+
 # Always write code-server config from template (ensures it stays in sync)
 CONFIG="/root/.config/code-server/config.yaml"
 mkdir -p /root/.config/code-server
