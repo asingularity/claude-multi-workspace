@@ -13,22 +13,26 @@ services:
     volumes:
       # Mount projects at the SAME absolute path inside container as on host
       # so Claude Code can find existing chat history (it indexes by absolute path)
-      - ${PROJECTS_DIR}:${PROJECTS_DIR}
+      - ${PROJECTS_DIR:-/tmp/empty}:${PROJECTS_DIR:-/tmp/empty}
       # Persist VS Code extensions, settings, and workspace state across rebuilds
       - code-server-data:/root/.local/share/code-server
       # Persist code-server config (TLS settings, machine ID) so sessions survive restarts
       - code-server-config:/root/.config/code-server
       # Bind-mount host ~/.claude so existing chats, auth, and config are shared
       - ~/.claude:/root/.claude
-      # Git config and SSH keys from host
+      # Git config and SSH keys from host (ssh mounted to staging path;
+      # entrypoint copies to /root/.ssh with correct ownership/permissions)
       - ~/.gitconfig:/root/.gitconfig:ro
-      - ~/.ssh:/root/.ssh:ro
+      - ~/.ssh:/etc/ssh-host:ro
+      # Forward host SSH agent (for passphrase-protected keys)
+      - ${SSH_AUTH_SOCK:-/dev/null}:/tmp/ssh-agent.sock:ro
       # Tailscale TLS certs for HTTPS (generated on host with `tailscale cert`)
       - /etc/tailscale/certs:/etc/tailscale/certs:ro
     environment:
       # Set your password here (or use a .env file)
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}
-      - PROJECTS_DIR=${PROJECTS_DIR}
+      - PROJECTS_DIR=${PROJECTS_DIR:-/tmp/empty}
+      - SSH_AUTH_SOCK=/tmp/ssh-agent.sock
     # Host networking lets `claude login` OAuth callback reach the container
     # (code-server will be at http://localhost:8080 directly)
     network_mode: host

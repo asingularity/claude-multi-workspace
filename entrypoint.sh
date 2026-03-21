@@ -7,9 +7,16 @@ if [ -n "$ANTHROPIC_API_KEY" ]; then
 fi
 
 # Trust all mounted directories (host user owns them, container runs as root)
-# Write to system-level config since ~/.gitconfig is mounted read-only from host
-# git config --global --add safe.directory '*'
 git config --system --add safe.directory '*'
+
+# Copy SSH keys from staging mount and fix permissions (OpenSSH requires strict ownership)
+if [ -d /etc/ssh-host ]; then
+    cp -r /etc/ssh-host /root/.ssh
+    chmod 700 /root/.ssh
+    chmod 600 /root/.ssh/* 2>/dev/null || true
+    [ -f /root/.ssh/config ] && chmod 600 /root/.ssh/config
+    [ -f /root/.ssh/*.pub ] && chmod 644 /root/.ssh/*.pub 2>/dev/null || true
+fi
 
 # Symlink so `cd /workspace` still works as a convenience alias
 ln -sfn "${PROJECTS_DIR}" /workspace 2>/dev/null || true
