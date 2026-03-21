@@ -1,5 +1,12 @@
 # EEVIAC — Remote Dev Container for Claude Code
 
+## TODO
+
+- fix git issues
+- fix persistence of vs code sessions if possible, if container restarts
+- start claude with remote control on
+- start claude with all options
+
 ## What this gives you
 
 - **VS Code in your phone/laptop browser** via code-server, with server-side persistence
