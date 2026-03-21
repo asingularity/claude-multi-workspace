@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # export CODE_SERVER_PASSWORD="" # TODO get from secrets folder locally!
 

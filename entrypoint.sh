@@ -6,8 +6,18 @@ if [ -n "$ANTHROPIC_API_KEY" ]; then
     export ANTHROPIC_API_KEY
 fi
 
+# Trust all mounted directories (host user owns them, container runs as root)
+# Write to system-level config since ~/.gitconfig is mounted read-only from host
+# git config --global --add safe.directory '*'
+git config --system --add safe.directory '*'
+
 # Symlink so `cd /workspace` still works as a convenience alias
 ln -sfn "${PROJECTS_DIR}" /workspace 2>/dev/null || true
+
+# Always write code-server config from template (ensures it stays in sync)
+CONFIG="/root/.config/code-server/config.yaml"
+mkdir -p /root/.config/code-server
+cp /etc/code-server-config.yaml "$CONFIG"
 
 # Auto-detect Tailscale TLS certs if mounted
 CERT_DIR="/etc/tailscale/certs"
@@ -15,7 +25,6 @@ CERT_FILE=$(ls "$CERT_DIR"/*.crt 2>/dev/null | head -1)
 if [ -n "$CERT_FILE" ]; then
     KEY_FILE="${CERT_FILE%.crt}.key"
     if [ -f "$KEY_FILE" ]; then
-        CONFIG="/root/.config/code-server/config.yaml"
         sed -i "s|^cert:.*|cert: $CERT_FILE|" "$CONFIG"
         sed -i "s|^cert-key:.*|cert-key: $KEY_FILE|" "$CONFIG"
         echo "TLS enabled: $(basename "$CERT_FILE")"

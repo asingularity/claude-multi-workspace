@@ -53,9 +53,8 @@ RUN code-server --install-extension ms-python.python && \
     code-server --install-extension ms-toolsai.jupyter && \
     code-server --install-extension mhutchie.git-graph
 
-# code-server config
-RUN mkdir -p /root/.config/code-server
-COPY code-server-config.yaml /root/.config/code-server/config.yaml
+# code-server config template (entrypoint copies to config dir on first run)
+COPY code-server-config.yaml /etc/code-server-config.yaml
 
 # Entrypoint that starts code-server and keeps a bash session available
 COPY entrypoint.sh /entrypoint.sh

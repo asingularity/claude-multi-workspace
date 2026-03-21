@@ -2,10 +2,17 @@
 
 ## TODO
 
+### containerization
+
 - fix git issues
 - fix persistence of vs code sessions if possible, if container restarts
 - start claude with remote control on
 - start claude with all options
+
+### mobile
+
+- fix usage of vs code on phone? if possible; or find workaround for viewing images etc.
+
 
 ## What this gives you
 
@@ -110,3 +117,8 @@ VS Code settings and Claude auth persist across rebuilds (stored in Docker volum
 ```bash
 docker compose logs -f
 ```
+
+## Other
+
+Clean up code server config volume:  
+`docker volume rm eeviac_code-server-config`
