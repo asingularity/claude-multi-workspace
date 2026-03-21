@@ -4,10 +4,10 @@
 
 ### containerization
 
-- fix git issues
-- fix persistence of vs code sessions if possible, if container restarts
+- fix git issues - DONE
+- fix persistence of vs code sessions if possible, if container restarts - DONE
 - start claude with remote control on
-- start claude with all options
+- start claude with all permissions
 
 ### mobile
 
