@@ -1,4 +1,7 @@
 # Claude-Multi-Workspace
+## Motivation
+
+I wanted to have a way to [relatively] safely use claude in a dangerously-skip-permissions way across my projects, on my workstation, and to access my projects from any device at any time in a persistent manner.
 
 ## What this gives you
 
