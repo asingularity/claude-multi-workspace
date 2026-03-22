@@ -45,6 +45,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 # Install Claude Code
 RUN npm install -g @anthropic-ai/claude-code
 
+# Install gosu for dropping privileges
+RUN apt-get update && apt-get install -y --no-install-recommends gosu && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user (Claude Code refuses --dangerously-skip-permissions as root)
+RUN useradd -m -s /bin/bash -u 1000 coder
+
 # Install code-server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 

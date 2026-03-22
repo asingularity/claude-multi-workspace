@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+CODER_HOME="/home/coder"
+
 # Pass through ANTHROPIC_API_KEY if set
 if [ -n "$ANTHROPIC_API_KEY" ]; then
     export ANTHROPIC_API_KEY
@@ -9,14 +11,22 @@ fi
 # Trust all mounted directories (host user owns them, container runs as root)
 git config --system --add safe.directory '*'
 
-# Copy SSH keys from staging mount and fix permissions (OpenSSH requires strict ownership)
+# Copy SSH keys from staging mount and fix permissions for the coder user
 if [ -d /etc/ssh-host ]; then
-    cp -r /etc/ssh-host /root/.ssh
-    chmod 700 /root/.ssh
-    chmod 600 /root/.ssh/* 2>/dev/null || true
-    [ -f /root/.ssh/config ] && chmod 600 /root/.ssh/config
-    [ -f /root/.ssh/*.pub ] && chmod 644 /root/.ssh/*.pub 2>/dev/null || true
+    cp -r /etc/ssh-host "$CODER_HOME/.ssh"
+    chmod 700 "$CODER_HOME/.ssh"
+    chmod 600 "$CODER_HOME/.ssh"/* 2>/dev/null || true
+    [ -f "$CODER_HOME/.ssh/config" ] && chmod 600 "$CODER_HOME/.ssh/config"
+    chmod 644 "$CODER_HOME/.ssh"/*.pub 2>/dev/null || true
+    chown -R coder:coder "$CODER_HOME/.ssh"
 fi
+
+# Link host gitconfig for the coder user
+ln -sf /root/.gitconfig "$CODER_HOME/.gitconfig" 2>/dev/null || true
+
+# Link Claude config for the coder user
+ln -sfn /root/.claude "$CODER_HOME/.claude" 2>/dev/null || true
+ln -sf /root/.claude.json "$CODER_HOME/.claude.json" 2>/dev/null || true
 
 # Symlink so `cd /workspace` still works as a convenience alias
 ln -sfn "${PROJECTS_DIR}" /workspace 2>/dev/null || true
@@ -57,7 +67,7 @@ else
     echo "No Tailscale certs found — running HTTP"
 fi
 
-# Start code-server in the background
+# Start code-server in the background (runs as root — it needs access to volumes)
 echo "Starting code-server on :8080 ..."
 code-server ${PROJECTS_DIR} &
 
@@ -68,6 +78,7 @@ echo "========================================"
 echo "  code-server running on port 8080"
 echo "  Open in browser to use VS Code"
 echo "  Claude Code available in the terminal"
+echo "  Run claude as: gosu coder claude"
 echo "========================================"
 
 # Keep container alive

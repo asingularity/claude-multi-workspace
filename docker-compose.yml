@@ -20,6 +20,7 @@ services:
       - code-server-config:/root/.config/code-server
       # Bind-mount host ~/.claude so existing chats, auth, and config are shared
       - ~/.claude:/root/.claude
+      - ~/.claude.json:/root/.claude.json
       # Git config and SSH keys from host (ssh mounted to staging path;
       # entrypoint copies to /root/.ssh with correct ownership/permissions)
       - ~/.gitconfig:/root/.gitconfig:ro

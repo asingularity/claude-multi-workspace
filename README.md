@@ -73,9 +73,11 @@ Find your hostname with `tailscale status` — it will be something like `myhost
 ./stop_docker.sh
 ```
 
-## Claude Code login
+## Claude Code
 
-From inside a code-server terminal (or via `docker exec`):
+### Login
+
+From inside a code-server terminal (or via `./connect_to_docker.sh`):
 
 ```bash
 claude login
@@ -83,20 +85,27 @@ claude login
 
 It will print an OAuth URL — open it in any browser. Because the container uses host networking, the callback reaches it directly. The credential persists in your host's `~/.claude/`.
 
+### Running with full permissions
+
+Terminals run as a non-root `coder` user, so `--dangerously-skip-permissions` works:
+
+```bash
+claude --dangerously-skip-permissions
+```
+
+This gives Claude full autonomy — no prompts for file edits, shell commands, web searches, etc.
+
+### Existing sessions
+
+Your host's `~/.claude` and `~/.claude.json` are bind-mounted into the container, so existing chat history and auth carry over. Claude indexes sessions by absolute project path, which is why the projects folder is mounted at the same path inside the container.
+
+**Note:** Don't run Claude on the same project from host and container simultaneously — this can cause file contention.
+
 ## Session persistence
 
 code-server runs server-side, so **closing your browser doesn't stop running processes**. When you reconnect, your terminals and any running Claude Code session are still there.
 
-For extra resilience on very long-running tasks, run Claude inside tmux:
-
-```bash
-tmux new -s claude
-claude
-# detach: Ctrl+B, D
-# reattach: tmux attach -t claude
-```
-
-The process survives even if code-server restarts — as long as the container stays up.
+Terminals auto-attach to project-specific tmux sessions (named after the project folder). This means long-running Claude sessions survive even if code-server restarts — as long as the container stays up.
 
 ## Git
 
