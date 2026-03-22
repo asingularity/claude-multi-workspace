@@ -116,6 +116,3 @@ VS Code settings and Claude auth persist across rebuilds (stored in Docker volum
 ```bash
 docker compose logs -f
 ```
-### mobile
-
-- fix usage of vs code on phone? if possible; or find workaround for viewing images etc.

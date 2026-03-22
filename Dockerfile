@@ -70,7 +70,7 @@ RUN chmod +x /usr/local/bin/tmux-shell
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-WORKDIR /home/csaba/projects
+WORKDIR /workspace
 
 EXPOSE 8080
 

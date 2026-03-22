@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# export CODE_SERVER_PASSWORD="" # TODO get from secrets folder locally!
+# export CODE_SERVER_PASSWORD="your-password-here"
 
 # Projects folder — mounted into the container at the same absolute path
 export PROJECTS_DIR="${PROJECTS_DIR:-$HOME/projects}"

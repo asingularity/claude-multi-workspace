@@ -43,35 +43,6 @@ services:
     security_opt:
       - seccomp:unconfined
 
-  # ---- Optional: Tailscale sidecar for phone access ----
-  # Uncomment this block to expose your dev container over Tailscale
-  # without opening ports on your network.
-  #
-  # Setup:
-  #   1. Go to https://login.tailscale.com/admin/settings/keys
-  #   2. Generate an auth key (reusable, ephemeral is fine)
-  #   3. Set it: export TS_AUTHKEY=tskey-auth-xxxxx
-  #   4. Install Tailscale on your phone
-  #   5. Access code-server at http://claude-workspace:8080 from your phone
-  #
-  # tailscale:
-  #   image: tailscale/tailscale:latest
-  #   container_name: tailscale-dev
-  #   hostname: claude-workspace
-  #   environment:
-  #     - TS_AUTHKEY=${TS_AUTHKEY}
-  #     - TS_STATE_DIR=/var/lib/tailscale
-  #     - TS_EXTRA_ARGS=--advertise-tags=tag:dev
-  #   volumes:
-  #     - tailscale-state:/var/lib/tailscale
-  #     - /dev/net/tun:/dev/net/tun
-  #   cap_add:
-  #     - NET_ADMIN
-  #     - SYS_MODULE
-  #   network_mode: service:dev   # shares network with dev container
-  #   restart: unless-stopped
-
 volumes:
   code-server-data:
   code-server-config:
-  # tailscale-state:
