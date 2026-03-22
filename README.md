@@ -1,9 +1,13 @@
-# EEVIAC — Remote Dev Container for Claude Code
+# Claude-Multi-Workspace
 
 ## What this gives you
 
-- **VS Code in your phone/laptop browser** via code-server, with server-side persistence
-- **Claude Code** in the integrated terminal, containerized with full permissions
+An nvidia and pytorch-enabled, containerized, assumed self-hosted worskpace, with multiple projects. Session persistence via tmux. 
+
+- **VS Code in your phone or laptop browser** via code-server, with server-side persistence
+- **Tmux enabled** automatically as default terminal, with per-project named sessions
+- **Claude Code** via CLI in the integrated terminal, containerized
+- **Git configured** via proper ssh mounts
 - **GPU access** for PyTorch / CUDA work
 - **HTTPS via Tailscale** so you can access it securely from anywhere
 
