@@ -4,12 +4,12 @@
 
 An nvidia and pytorch-enabled, containerized, assumed self-hosted worskpace, with multiple projects. Session persistence via tmux. 
 
-- **VS Code in your phone or laptop browser** via code-server, with server-side persistence
-- **Tmux enabled** automatically as default terminal, with per-project named sessions
+- **VS Code in your phone or laptop browser** via [code-server](https://github.com/coder/code-server), with server-side persistence
+- **Tmux enabled** [tmux](https://github.com/tmux/tmux/wiki) automatically as default terminal, with per-project named sessions
 - **Claude Code** via CLI in the integrated terminal, containerized
 - **Git configured** via proper ssh mounts
 - **GPU access** for PyTorch / CUDA work
-- **HTTPS via Tailscale** so you can access it securely from anywhere
+- **HTTPS** via Tailscale so you can access it securely from anywhere
 
 ## Prerequisites
 
