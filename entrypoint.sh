@@ -21,6 +21,9 @@ if [ -d /etc/ssh-host ]; then
     chown -R coder:coder "$CODER_HOME/.ssh"
 fi
 
+# Allow coder to traverse /root so symlinks into it work
+chmod 711 /root
+
 # Link host gitconfig for the coder user
 ln -sf /root/.gitconfig "$CODER_HOME/.gitconfig" 2>/dev/null || true
 

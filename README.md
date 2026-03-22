@@ -1,19 +1,5 @@
 # EEVIAC — Remote Dev Container for Claude Code
 
-## TODO
-
-### containerization
-
-- fix git issues - DONE
-- fix persistence of vs code sessions if possible, if container restarts - DONE
-- start claude with remote control on
-- start claude with all permissions
-
-### mobile
-
-- fix usage of vs code on phone? if possible; or find workaround for viewing images etc.
-
-
 ## What this gives you
 
 - **VS Code in your phone/laptop browser** via code-server, with server-side persistence
@@ -131,3 +117,17 @@ docker compose logs -f
 
 Clean up code server config volume:  
 `docker volume rm eeviac_code-server-config`
+
+
+## TODO
+
+### containerization
+
+- fix git issues - DONE
+- fix persistence of vs code sessions if possible, if container restarts - DONE
+- start claude with remote control on - DONE
+- start claude with all permissions - DONE
+
+### mobile
+
+- fix usage of vs code on phone? if possible; or find workaround for viewing images etc.
