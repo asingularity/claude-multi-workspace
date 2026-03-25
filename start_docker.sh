@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # export CODE_SERVER_PASSWORD="your-password-here"
+# export ANTHROPIC_API_KEY="sk-ant-..."  # optional: bypasses OAuth, avoids multi-session logout issue
 
 # Projects folder — mounted into the container at the same absolute path
 export PROJECTS_DIR="${PROJECTS_DIR:-$HOME/projects}"

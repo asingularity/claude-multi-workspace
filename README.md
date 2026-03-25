@@ -65,15 +65,35 @@ Find your hostname with `tailscale status` — it will be something like `myhost
 
 ## Claude Code
 
-### Login
+### Authentication
 
-From inside a code-server terminal (or via `./connect_to_docker.sh`):
+Log in from inside a code-server terminal (or via `./connect_to_docker.sh`):
 
 ```bash
 claude login
 ```
 
 It will print an OAuth URL — open it in any browser. Because the container uses host networking, the callback reaches it directly. The credential persists in your host's `~/.claude/`.
+
+### Known issue: frequent logouts with multiple sessions
+
+OAuth refresh tokens are single-use. When multiple concurrent Claude sessions share
+the same `~/.claude/.credentials.json`, they race to refresh the token — one session
+wins, the rest get 401 errors and force re-login. This is a [known upstream bug](https://github.com/anthropics/claude-code/issues/24317) with several open issues (#37678, #36911).
+
+**Workaround — use an API key instead of OAuth:**
+
+If you have access to the [Claude Console](https://console.anthropic.com/), set `ANTHROPIC_API_KEY`
+in `start_docker.sh`. This bypasses OAuth entirely and has no refresh race. Note: this uses
+API billing, not your subscription quota.
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+
+If you must use a subscription, minimize the issue by avoiding simultaneous sessions
+that are idle long enough for tokens to expire (~15 hours). Active sessions are fine;
+the race only triggers when multiple sessions try to refresh at the same time.
 
 ### Running with full permissions
 
