@@ -56,7 +56,7 @@ This builds the image (if needed) and starts the container. Subsequent runs reus
 
 ### 5. Access from any device
 
-Open `https://<your-tailscale-hostname>:8080` in your phone or laptop browser.
+Open `https://<your-tailscale-hostname>:8080` in your phone or laptop browser to access the full projects folder, then use the vs code interface to open a specific project.  
 
 Find your hostname with `tailscale status` — it will be something like `myhost.tail1234.ts.net`.
 
