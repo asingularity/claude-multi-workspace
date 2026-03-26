@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -20,12 +20,12 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 # Bootstrap pip for 3.12
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
 
-# Install PyTorch with CUDA 11.8
+# Install PyTorch with CUDA 12.4
 RUN pip install --no-cache-dir \
-    torch==2.7.1+cu118 \
-    torchaudio==2.7.1+cu118 \
-    torchvision==0.22.1+cu118 \
-    --index-url https://download.pytorch.org/whl/cu118
+    torch==2.6.0+cu124 \
+    torchaudio==2.6.0+cu124 \
+    torchvision==0.21.0+cu124 \
+    --index-url https://download.pytorch.org/whl/cu124
 
 # Install remaining dependencies
 RUN pip install --no-cache-dir \
@@ -49,7 +49,9 @@ RUN npm install -g @anthropic-ai/claude-code
 RUN apt-get update && apt-get install -y --no-install-recommends gosu && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user (Claude Code refuses --dangerously-skip-permissions as root)
-RUN useradd -m -s /bin/bash -u 1000 coder
+# UID must match host user so bind-mounted files (~/.claude) are accessible
+ARG HOST_UID=1000
+RUN useradd -m -s /bin/bash -u ${HOST_UID} coder
 
 # Install code-server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
