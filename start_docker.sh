@@ -16,4 +16,7 @@ ssh-add -l &>/dev/null || ssh-add
 
 export SSH_AUTH_SOCK
 
+# Match container coder UID to host user so bind-mounted files are accessible
+export HOST_UID="$(id -u)"
+
 docker compose up -d --build

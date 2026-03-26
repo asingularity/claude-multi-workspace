@@ -1,6 +1,9 @@
 services:
   dev:
-    build: .
+    build:
+      context: .
+      args:
+        HOST_UID: ${HOST_UID:-1000}
     container_name: claude-workspace
     # Full GPU access
     deploy:
