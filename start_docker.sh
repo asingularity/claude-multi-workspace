@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # export CODE_SERVER_PASSWORD="your-password-here"
-# export ANTHROPIC_API_KEY="sk-ant-..."  # optional: bypasses OAuth, avoids multi-session logout issue
+# export ANTHROPIC_API_KEY="sk-ant-..."  # optional: API key auth (pay-per-use, bypasses subscription)
+# export CLAUDE_CODE_OAUTH_TOKEN="..."      # recommended: long-lived subscription token (run `claude setup-token` to generate)
 
 # Projects folder — mounted into the container at the same absolute path
 export PROJECTS_DIR="${PROJECTS_DIR:-$HOME/projects}"

@@ -84,7 +84,13 @@ OAuth refresh tokens are single-use. When multiple concurrent Claude sessions sh
 the same `~/.claude/.credentials.json`, they race to refresh the token — one session
 wins, the rest get 401 errors and force re-login. This is a [known upstream bug](https://github.com/anthropics/claude-code/issues/24317) with several open issues (#37678, #36911).
 
-**Workaround — use an API key instead of OAuth:**
+**Workaround 1 - use long-lived auth token. Export before starting docker:**
+
+```bash
+export CLAUDE_CODE_OAUTH_TOKEN="..."      # recommended: long-lived subscription token (run `claude setup-token` to generate)
+```
+
+**Workaround 2 — use an API key instead of OAuth:**
 
 If you have access to the [Claude Console](https://console.anthropic.com/), set `ANTHROPIC_API_KEY`
 in `start_docker.sh`. This bypasses OAuth entirely and has no refresh race. Note: this uses
@@ -93,10 +99,6 @@ API billing, not your subscription quota.
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
 ```
-
-If you must use a subscription, minimize the issue by avoiding simultaneous sessions
-that are idle long enough for tokens to expire (~15 hours). Active sessions are fine;
-the race only triggers when multiple sessions try to refresh at the same time.
 
 ### Running with full permissions
 

@@ -37,6 +37,8 @@ services:
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}
       - PROJECTS_DIR=${PROJECTS_DIR:-/tmp/empty}
       - SSH_AUTH_SOCK=/tmp/ssh-agent.sock
+      - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     # Host networking lets `claude login` OAuth callback reach the container
     # (code-server will be at http://localhost:8080 directly)
     network_mode: host
