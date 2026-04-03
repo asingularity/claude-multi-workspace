@@ -1,5 +1,5 @@
 curl -fsSL https://tailscale.com/install.sh | sh
-
+sudo tailscale up
 
 # enable https cert
 sudo mkdir -p /etc/tailscale/certs
