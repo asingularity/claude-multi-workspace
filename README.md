@@ -87,7 +87,7 @@ wins, the rest get 401 errors and force re-login. This is a [known upstream bug]
 **Workaround 1 - use long-lived auth token. Export before starting docker:**
 
 ```bash
-export ANTHROPIC_AUTH_TOKEN="..."      # recommended: long-lived subscription token (run `claude setup-token` to generate)
+export CLAUDE_CODE_OAUTH_TOKEN="..."      # recommended: long-lived subscription token (run `claude setup-token` to generate)
 ```
 
 **Workaround 2 — use an API key instead of OAuth:**
