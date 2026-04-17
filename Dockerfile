@@ -37,13 +37,19 @@ RUN pip install --no-cache-dir \
     pytest==9.0.2 \
     line_profiler==5.0.0
 
-# Install Node.js (for Claude CLI)
+# Install Node.js (used by code-server; Claude Code has its own native binary)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Claude Code
-RUN npm install -g @anthropic-ai/claude-code
+# Install Claude Code via the native installer.
+# WORKDIR must be set before running — installing from / causes the installer
+# to scan the whole filesystem and hang (per Anthropic's Docker troubleshooting).
+# The installer drops the binary at ~/.local/bin/claude; symlink into /usr/local/bin
+# so it's on PATH for all users (root, coder) without further setup.
+WORKDIR /tmp
+RUN curl -fsSL https://claude.ai/install.sh | bash && \
+    ln -s /root/.local/bin/claude /usr/local/bin/claude
 
 # Install gosu for dropping privileges
 RUN apt-get update && apt-get install -y --no-install-recommends gosu && rm -rf /var/lib/apt/lists/*
