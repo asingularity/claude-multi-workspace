@@ -20,4 +20,11 @@ export SSH_AUTH_SOCK
 # Match container coder UID to host user so bind-mounted files are accessible
 export HOST_UID="$(id -u)"
 
-docker compose up -d --build
+BUILD_FLAGS="--build"
+if [ "$1" = "--fresh" ]; then
+    echo "Full rebuild (no cache)..."
+    docker compose build --no-cache
+    BUILD_FLAGS=""
+fi
+
+docker compose up -d $BUILD_FLAGS
