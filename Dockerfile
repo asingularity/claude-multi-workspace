@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -20,12 +20,12 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 # Bootstrap pip for 3.12
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
 
-# Install PyTorch with CUDA 12.4
+# Install PyTorch with CUDA 11.8
 RUN pip install --no-cache-dir \
-    torch==2.6.0+cu124 \
-    torchaudio==2.6.0+cu124 \
-    torchvision==0.21.0+cu124 \
-    --index-url https://download.pytorch.org/whl/cu124
+    torch==2.7.1+cu118 \
+    torchaudio==2.7.1+cu118 \
+    torchvision==0.22.1+cu118 \
+    --index-url https://download.pytorch.org/whl/cu118
 
 # Install remaining dependencies
 RUN pip install --no-cache-dir \
