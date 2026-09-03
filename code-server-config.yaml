@@ -1,4 +1,4 @@
-bind-addr: 0.0.0.0:8080
+bind-addr: 0.0.0.0:8081
 auth: password
 # Change this! Or set PASSWORD env var in docker-compose.yml
 password: changeme

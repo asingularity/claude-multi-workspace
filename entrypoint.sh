@@ -71,7 +71,7 @@ else
 fi
 
 # Start code-server in the background (runs as root — it needs access to volumes)
-echo "Starting code-server on :8080 ..."
+echo "Starting code-server on :8081 ..."
 code-server ${PROJECTS_DIR} &
 
 # Start a tmux session as fallback (for SSH access if you ever need it)

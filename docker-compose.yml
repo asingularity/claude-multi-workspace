@@ -4,7 +4,7 @@ services:
       context: .
       args:
         HOST_UID: ${HOST_UID:-1000}
-    container_name: claude-workspace
+    container_name: claude-workspace-c
     # Full GPU access
     deploy:
       resources:
