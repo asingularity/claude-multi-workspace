@@ -28,19 +28,22 @@ services:
       # entrypoint copies to /root/.ssh with correct ownership/permissions)
       - ~/.gitconfig:/root/.gitconfig:ro
       - ~/.ssh:/etc/ssh-host:ro
-      # Forward host SSH agent (for passphrase-protected keys)
-      - ${SSH_AUTH_SOCK:-/dev/null}:/tmp/ssh-agent.sock:ro
+      # SSH agent for passphrase-protected keys. The *directory* is mounted, not
+      # the socket: the directory exists at boot, so the restart policy can bring
+      # the container back after a reboot before any agent is running.
+      # start_docker.sh (re)creates the agent socket inside it after login.
+      - ~/.eeviac:/run/ssh-agent:ro
       # Tailscale TLS certs for HTTPS (generated on host with `tailscale cert`)
       - /etc/tailscale/certs:/etc/tailscale/certs:ro
     environment:
       # Set your password here (or use a .env file)
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme}
       - PROJECTS_DIR=${PROJECTS_DIR:-/tmp/empty}
-      - SSH_AUTH_SOCK=/tmp/ssh-agent.sock
+      - SSH_AUTH_SOCK=/run/ssh-agent/ssh-agent.sock
       - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     # Host networking lets `claude login` OAuth callback reach the container
-    # (code-server will be at http://localhost:8080 directly)
+    # (code-server is reachable at https://localhost:8083 directly)
     network_mode: host
     restart: unless-stopped
     # Give Claude Code full permissions - no stuck prompts

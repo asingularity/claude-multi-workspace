@@ -38,13 +38,15 @@ The folder is mounted at the same absolute path inside the container so that Cla
 ./install_tailscale.sh
 ```
 
-This installs Tailscale (if not already installed) and generates TLS certificates in `/etc/tailscale/certs/`. These are auto-detected by the container at startup.
+This installs Tailscale (if not already installed), generates TLS certificates in `/etc/tailscale/certs/` (auto-detected by the container at startup), and installs a weekly cron job that renews them. See [HTTPS certificate renewal](#https-certificate-renewal).
 
 ### 3. Set your password
 
 ```bash
 export CODE_SERVER_PASSWORD="something-secure"
 ```
+
+Or, instead of exporting anything, copy `.env.example` to `.env` next to `docker-compose.yml` and fill in the password (and the Claude token described below); compose reads it automatically and it is gitignored. Use the same values on every start: a different value makes compose recreate the container, which ends every tmux session inside it.
 
 ### 4. Start the container
 
@@ -56,7 +58,7 @@ This builds the image (if needed) and starts the container. Subsequent runs reus
 
 ### 5. Access from any device
 
-Open `https://<your-tailscale-hostname>:8080` in your phone or laptop browser to access the full projects folder, then use the vs code interface to open a specific project.  
+Open `https://<your-tailscale-hostname>:8083` in your phone or laptop browser to access the full projects folder, then use the vs code interface to open a specific project. (The port is `bind-addr` in `code-server-config.yaml`.)
 
 Find your hostname with `tailscale status` — it will be something like `myhost.tail1234.ts.net`.
 
@@ -122,9 +124,31 @@ code-server runs server-side, so **closing your browser doesn't stop running pro
 
 Terminals auto-attach to project-specific tmux sessions (named after the project folder). This means long-running Claude sessions survive even if code-server restarts — as long as the container stays up.
 
+### After a host reboot
+
+The container comes back on its own (`restart: unless-stopped`). The SSH agent inside it is unavailable until you log in and run `./start_docker.sh` again, which recreates the agent socket in place (passphrase asked once per boot) and renews the HTTPS certificate if needed. tmux sessions do not survive a reboot.
+
 ## Git
 
 Git config and SSH keys are mounted read-only from the host. Push, pull, and clone work out of the box — no additional setup needed inside the container.
+
+Passphrase-protected keys are served by a dedicated `ssh-agent` that `start_docker.sh` runs on the host. Its socket lives in `~/.eeviac/` and that directory is mounted into the container, so the agent can be restarted (after a reboot, say) without restarting the container.
+
+## HTTPS certificate renewal
+
+`tailscale cert` issues 90-day Let's Encrypt certificates, and nothing renews the files on disk by itself. Once the certificate expires, browsers show an "expired certificate" warning or refuse to connect at all.
+
+- `./start_docker.sh` runs `./renew_cert.sh` on every start.
+- `./install_tailscale.sh` (or `./renew_cert.sh --install-cron`) installs `/etc/cron.d/tailscale-cert-renew`, which renews weekly while the container keeps running for months.
+- The container watches the certificate files and restarts only code-server when they change, so tmux sessions (and Claude sessions inside them) survive.
+
+Check the current expiry:
+
+```bash
+openssl x509 -in /etc/tailscale/certs/*.crt -noout -enddate
+```
+
+Renew by hand with `./renew_cert.sh`. The host must be on the Tailscale profile the certificate was issued for (`tailscale status` shows the active node name).
 
 ## Rebuilding
 
@@ -139,5 +163,7 @@ VS Code settings and Claude auth persist across rebuilds (stored in Docker volum
 ## Logs
 
 ```bash
-docker compose logs -f
+docker logs -f claude-workspace-c
 ```
+
+Startup prints the TLS status (`TLS cert valid until: ...` or a loud `EXPIRED` warning) followed by code-server's own `HTTPS server listening` line.

@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.8.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -20,12 +20,12 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 # Bootstrap pip for 3.12
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
 
-# Install PyTorch with CUDA 11.8
+# Install PyTorch with CUDA 12.8
 RUN pip install --no-cache-dir \
-    torch==2.7.1+cu118 \
-    torchaudio==2.7.1+cu118 \
-    torchvision==0.22.1+cu118 \
-    --index-url https://download.pytorch.org/whl/cu118
+    torch==2.11.0+cu128 \
+    torchaudio==2.11.0+cu128 \
+    torchvision==0.26.0+cu128 \
+    --index-url https://download.pytorch.org/whl/cu128
 
 # Install remaining dependencies
 RUN pip install --no-cache-dir \
@@ -80,6 +80,6 @@ RUN chmod +x /entrypoint.sh
 
 WORKDIR /workspace
 
-EXPOSE 8080
+EXPOSE 8083
 
 ENTRYPOINT ["/entrypoint.sh"]
