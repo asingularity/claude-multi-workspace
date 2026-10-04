@@ -17,7 +17,7 @@ cd "$(dirname "$0")"
 export PROJECTS_DIR="${PROJECTS_DIR:-$HOME/projects}"
 
 # Fail fast on an unfilled .env before asking for sudo or passphrases.
-if grep -qs 'CHANGE-ME' .env; then
+if grep -qsE '^[A-Za-z_]+=.*CHANGE-ME' .env; then   # assignment lines only, not comments
     echo "ERROR: .env still contains CHANGE-ME placeholders - fill them in first (see .env.example)" >&2
     exit 1
 fi
