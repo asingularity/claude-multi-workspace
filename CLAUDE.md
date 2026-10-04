@@ -93,6 +93,11 @@ docker exec claude-workspace-c ps -eo pid,user,etime,cmd   # code-server, tmux s
    must agree; the entrypoint reads the port from the config template.
 7. `entrypoint.sh` runs with `set -e`; keep background work inside functions
    that call `set +e` (see `supervise_code_server`).
+8. PID 1 starts with cwd `/workspace` (Dockerfile `WORKDIR`), which the
+   entrypoint replaces with a symlink. It must `cd /` first: removing the cwd
+   makes every child inherit a deleted directory and Node dies at startup
+   with `process.cwd failed ... uv_cwd` (this happened). After any entrypoint
+   edit, run the image once and read the log through `HTTPS server listening`.
 
 ## Branches
 

@@ -34,8 +34,10 @@ ln -sfn /root/.claude "$CODER_HOME/.claude" 2>/dev/null || true
 ln -sf /root/.claude.json "$CODER_HOME/.claude.json" 2>/dev/null || true
 
 # Symlink so `cd /workspace` still works as a convenience alias. The Dockerfile's
-# WORKDIR created /workspace as a real (empty) directory; drop it first, or the
-# link would land inside it as /workspace/<basename>.
+# WORKDIR created /workspace as a real (empty) directory and it is this shell's
+# cwd; leave it before removing it, or every child process (code-server!)
+# inherits a deleted cwd and Node dies with "process.cwd failed ... uv_cwd".
+cd /
 [ -d /workspace ] && [ ! -L /workspace ] && rmdir /workspace 2>/dev/null || true
 ln -sfn "${PROJECTS_DIR}" /workspace 2>/dev/null || true
 
